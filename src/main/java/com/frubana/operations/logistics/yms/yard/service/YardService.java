@@ -1,26 +1,21 @@
 package com.frubana.operations.logistics.yms.yard.service;
 
-import com.frubana.operations.logistics.yms.common.clients.SomeClient;
-import com.frubana.operations.logistics.yms.common.utils.SlackUtils;
 import com.frubana.operations.logistics.yms.health.service.HealthCheck;
 import com.frubana.operations.logistics.yms.yard.domain.Yard;
 import com.frubana.operations.logistics.yms.yard.domain.repository.YardRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Service of the some objects Logic.
  */
 @Component
-public class SomeService implements HealthCheck {
+public class YardService implements HealthCheck {
     /** The name that represents this service. MUST NOT BE CHANGED. */
-    public static final String SERVICE_NAME = "someService";
+    public static final String SERVICE_NAME = "yms";
 
-    /** Slack utility to send notifications, it's never null. */
-    private final SlackUtils notificationUtil;
 
     /** The repository to ask for data, it's never null. */
     private final YardRepository repository;
@@ -28,15 +23,11 @@ public class SomeService implements HealthCheck {
 
     /** Constructor.
      *
-     * @param notificationUtil  The util to notify to a readable chat the
-     *                          errors.
      * @param repository        Repository to persists or extract the needed
      *                          data of the tasks.
      */
     @Autowired
-    public SomeService(
-            SlackUtils notificationUtil, YardRepository repository) {
-        this.notificationUtil = notificationUtil;
+    public YardService(YardRepository repository) {
         this.repository = repository;
     }
 
@@ -67,17 +58,27 @@ public class SomeService implements HealthCheck {
 
     /** Creates the some object in the labels repository to generate its
      * some object when required.
-     * @param task The task to register, cannot be null.
+     * @param yard The task to register, cannot be null.
+     * @param warehouse
      */
     @Transactional
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
-    public void registerSomeObject(Yard task) {
+    public void registerSomeObject(Yard yard,String warehouse) {
 
     }
 
     @Override
     public boolean isServiceHealthy() {
         return true;
+    }
+
+    /**
+     * Save a Yard in the repository
+     * @param yard
+     * @param warehouse
+     */
+    public Yard registerYard(Yard yard, String warehouse) {
+       return this.repository.register(yard,warehouse);
     }
 }

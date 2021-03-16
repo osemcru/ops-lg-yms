@@ -2,6 +2,7 @@ package com.frubana.operations.logistics.yms.yard.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -39,6 +40,45 @@ import java.time.LocalDateTime;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Yard {
 
+    //a number that represents the unique id of the yard
+    int id;
+    //the color of this yard in hexadecimal representation #RRGGBB
+    String color;
+    //the number that represents the space location of this yard (NOT UNIQUE)
+    int assignationNumber;
+
+
+    /**
+     * Creates a new instance of the yard with all its attributes.
+     * @param id the unique identifier of the Yard
+     * @param color the color of the Yard
+     * @param assignationNumber the space location of this yard.
+     */
+    public Yard(int id,
+                String color,int assignationNumber){
+        this.id=id;
+        this.color=color;
+        this.assignationNumber=assignationNumber;
+        this.validate();
+    }
+
+    /**
+     * Internal Validation of the instance of the object.
+     * @return True if the {@link Yard} is Valid
+     */
+    private boolean validate()
+    {
+        if(!(this.id >0)){
+            throw new IllegalArgumentException();
+        }
+        if(StringUtils.isEmpty(this.color) || StringUtils.isBlank(this.color)){
+            throw new IllegalArgumentException();
+        }
+        if(!(this.assignationNumber >0)){
+            throw new IllegalArgumentException();
+        }
+        return  true;
+    }
 
     /**
      * Used for be created from the JSON, don't use it in the code!.
@@ -47,4 +87,7 @@ public class Yard {
     }
 
 
+    public String getColor() {
+        return this.color;
+    }
 }

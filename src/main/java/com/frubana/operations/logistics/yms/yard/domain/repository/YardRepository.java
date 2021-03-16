@@ -1,9 +1,11 @@
 package com.frubana.operations.logistics.yms.yard.domain.repository;
 
 import com.frubana.operations.logistics.yms.yard.domain.Yard;
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jdbi.v3.core.statement.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,25 @@ public class YardRepository {
     @Autowired
     public YardRepository(Jdbi jdbi) {
         this.dbi = jdbi;
+    }
+
+    public Yard register(Yard yard, String warehouse){
+        String sql_query="Insert into yard (color, warehouse)"+
+                " values(:color, :warehouse)";
+        try(Handle handler=dbi.open();
+            Update query_string = handler.createUpdate(sql_query)){
+            query_string
+                    .bind("color",yard.getColor())
+                    .bind("warehouse",warehouse);
+            int yard_id=query_string
+                    .executeAndReturnGeneratedKeys("id")
+                    .mapTo(int.class).first();
+            return new Yard(yard_id,yard.getColor(),1);
+        }
+
+
+
+
     }
 
 
