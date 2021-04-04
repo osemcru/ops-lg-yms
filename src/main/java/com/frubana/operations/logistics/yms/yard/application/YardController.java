@@ -12,8 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.springframework.http.ResponseEntity.status;
 
@@ -64,6 +65,7 @@ public class YardController {
         return yardService.isServiceHealthy();
     }
 
+
     /** Returns the task of the given id.
      *
      * @param id        The id of the task to request.
@@ -74,22 +76,22 @@ public class YardController {
      * </code>
      */
     @GetMapping(
-            value =  "/{warehouse}/",
+            value =  "/{warehouse}/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> getTask(
+    public ResponseEntity<Object> getYardInWarehouseById(
             @PathVariable(value = "warehouse") String warehouse,
             @PathVariable(value = "id") String id) {
         //Logging the given info
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", id);
         params.put("warehouse", warehouse);
-        logFormatter.logInfo(logger, "getTask", "Received request", params);
+        logFormatter.logInfo(logger, "getYard", "Received request", params);
 
         if (id == null || id.isBlank()) {
             return status(HttpStatus.BAD_REQUEST).body(
                     JsonUtils.jsonResponse(HttpStatus.BAD_REQUEST,
-                            "The task cannot be null or empty"));
+                            "The id cannot be null or empty"));
         }
         if (warehouse == null || warehouse.isBlank()) {
             return status(HttpStatus.BAD_REQUEST).body(
@@ -98,15 +100,105 @@ public class YardController {
         }
 
         if (yardService.exists(id, warehouse)) {
-            // Register the task throws an error if something fails.
-            Yard task = yardService.obtainSomeObject(id, warehouse);
-            params.put("task", task);
-            logFormatter.logInfo(logger, "obtainSomeObject", "found the task",
+            // Register the yard throws an error if something fails.
+            Yard yard = yardService.getYard(id, warehouse);
+            params.put("yard", yard);
+            logFormatter.logInfo(logger, "obtainAYard", "found the Yard",
                     params);
-            return status(HttpStatus.OK).body(task);
+            if(yard != null)
+                return status(HttpStatus.OK).body(yard);
+            else
+                return status(HttpStatus.NOT_FOUND).body("Yard not Found");
         }
 
         return status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+
+    /** Returns the yards of the given warehouse.
+     *
+     * @param warehouse The warehouse where the task belongs.
+     * @return A JSON representing a some object:
+     * <code>
+     * {@link Yard}
+     * </code>
+     */
+    @GetMapping(
+            value =  "/{warehouse}/",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> getAllYardsInWarehouse(
+            @PathVariable(value = "warehouse") String warehouse) {
+        //Logging the given info
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("warehouse", warehouse);
+        logFormatter.logInfo(logger, "getAllYardsInWarehouse",
+                "Received request", params);
+        if (warehouse == null || warehouse.isBlank()) {
+            return status(HttpStatus.BAD_REQUEST).body(
+                    JsonUtils.jsonResponse(HttpStatus.BAD_REQUEST,
+                            "The warehouse cannot be null or empty"));
+        }
+
+        // Register the yard throws an error if something fails.
+        List<Yard> yards = yardService.getYards(warehouse);
+        params.put("yards", yards);
+        HashMap<String,List<Yard>> yardsByWhs= new HashMap<>();
+        for(Yard yard : yards) {
+            if(!yardsByWhs.containsKey(yard.getColor())){
+                yardsByWhs.put(yard.getColor(), new ArrayList<>());
+            }
+            List currentYards = yardsByWhs.get(yard.getColor());
+            currentYards.add(yard);
+            yardsByWhs.put(yard.getColor(), currentYards);
+        }
+
+        logFormatter.logInfo(logger, "obtainAYard", "found the Yard",
+                params);
+        if(yards != null)
+            return status(HttpStatus.OK).body(yardsByWhs);
+        else
+            return status(HttpStatus.NOT_FOUND).body("Yard not Found");
+    }
+
+    /** Returns the yard of the given id.
+     *
+     * @return A JSON representing a some object:
+     * <code>
+     * {@link HashMap}<{@link String} warehouse,
+     *                 {@link List}<{@link Yard}>
+     *                >
+     * </code>
+     */
+    @GetMapping(
+            value =  "/",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> getAllYardsByWarehouse() {
+        //Logging the given info
+        HashMap<String, Object> params = new HashMap<>();
+        logFormatter.logInfo(logger, "getAllYardsByWarehouse",
+                "Received request", params);
+        // Register the yard throws an error if something fails.
+        List<Yard> yards = yardService.getYards();
+        params.put("yards", yards);
+        HashMap<String,List<Yard>> yardsByWhs= new HashMap<>();
+        for (Yard yard:yards) {
+            if( !yardsByWhs.containsKey(yard.getWarehouse())) {
+                yardsByWhs.put(yard.getWarehouse(), new ArrayList<>());
+            }
+            List<Yard> currentYards=yardsByWhs.get(yard.getWarehouse());
+            currentYards.add(yard);
+            yardsByWhs.put(yard.getWarehouse(),currentYards);
+        }
+
+
+        logFormatter.logInfo(logger, "obtainAYard", "found the Yard",
+                params);
+        if(!yards.isEmpty())
+            return status(HttpStatus.OK).body(yardsByWhs);
+        else
+            return status(HttpStatus.NOT_FOUND).body("Yard not Found");
     }
 
     /** Generates the yard.

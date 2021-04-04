@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /** Service of the some objects Logic.
  */
 @Component
@@ -41,7 +43,7 @@ public class YardService implements HealthCheck {
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
     public boolean exists(String id, String warehouse) {
-        return false;
+        return this.repository.exist(Integer.parseInt(id),warehouse);
     }
 
     /** Returns the some object of the given id.
@@ -52,21 +54,10 @@ public class YardService implements HealthCheck {
      */
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
-    public Yard obtainSomeObject(String id, String warehouse) {
-        return null;
+    public Yard getYard(String id, String warehouse) {
+        return repository.getByIdAndWarehouse(Integer.parseInt(id), warehouse);
     }
 
-    /** Creates the some object in the labels repository to generate its
-     * some object when required.
-     * @param yard The task to register, cannot be null.
-     * @param warehouse
-     */
-    @Transactional
-    @Retry(name = SERVICE_NAME)
-    @CircuitBreaker(name = SERVICE_NAME)
-    public void registerSomeObject(Yard yard,String warehouse) {
-
-    }
 
     @Override
     public boolean isServiceHealthy() {
@@ -78,7 +69,30 @@ public class YardService implements HealthCheck {
      * @param yard
      * @param warehouse
      */
+    @Transactional
+    @Retry(name = SERVICE_NAME)
+    @CircuitBreaker(name = SERVICE_NAME)
     public Yard registerYard(Yard yard, String warehouse) {
        return this.repository.register(yard,warehouse);
+    }
+
+    /**
+     * get a list of yards by warehouse
+     * @param warehouse the warehouse that contains the yards
+     */
+    @Transactional
+    @Retry(name = SERVICE_NAME)
+    @CircuitBreaker(name = SERVICE_NAME)
+    public List<Yard> getYards(String warehouse) {
+        return repository.getByWarehouse(warehouse);
+    }
+    /**
+     * get a list of yards.
+     */
+    @Transactional
+    @Retry(name = SERVICE_NAME)
+    @CircuitBreaker(name = SERVICE_NAME)
+    public List<Yard> getYards() {
+        return repository.getAll();
     }
 }

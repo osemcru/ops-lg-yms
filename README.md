@@ -57,4 +57,5 @@ implicitly invokes unit tests. The build will break if any unit tests fail.
 
 ### Version
 
-    change-me-0.0.1
+    yms-0.0.1
+

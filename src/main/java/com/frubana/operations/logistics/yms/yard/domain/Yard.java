@@ -46,6 +46,8 @@ public class Yard {
     String color;
     //the number that represents the space location of this yard (NOT UNIQUE)
     int assignationNumber;
+    // the String of the warehouse
+    String warehouse;
 
 
     /**
@@ -74,9 +76,6 @@ public class Yard {
         if(StringUtils.isEmpty(this.color) || StringUtils.isBlank(this.color)){
             throw new IllegalArgumentException();
         }
-        if(!(this.assignationNumber >0)){
-            throw new IllegalArgumentException();
-        }
         return  true;
     }
 
@@ -87,7 +86,23 @@ public class Yard {
     }
 
 
+    /***
+     * get the color of the yard.
+     * @return the color in hex format.
+     */
     public String getColor() {
         return this.color;
     }
+
+    /**
+     * retrieve the warehouse
+     * @return {@link String} the warehouse
+     */
+    public String getWarehouse(){return  this.warehouse; }
+
+    public void AssignWarehouse(String warehouse){
+        this.warehouse=warehouse;
+    }
+
+
 }
