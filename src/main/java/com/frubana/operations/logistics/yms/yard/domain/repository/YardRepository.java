@@ -60,6 +60,17 @@ public class YardRepository {
         }
     }
 
+    /**
+     * Obtiene el siguiente numero de la assignacion ejemplo
+     * si para el muelle #ff0000 de la bodega ALQ existen el 1,2,3,4,5 en base de datos
+     * debe retornar el 6.
+     * OJO:
+     * si para el muelle #0000ff de la bodega ARM existen el 1,3,4,5 en base de datos
+     * debe retornar el 2.
+     * @param color
+     * @param warehouse
+     * @return
+     */
     private int getNextAssignationNumber(String color, String warehouse){
         //TODO: return the next number to be assigned for this match of color
         // be carefully for the deleted index.
