@@ -10,3 +10,6 @@ java-ops-base-ms.iml
 
 src/main/resources/application.yml
 
+*.class
+
+*.pdf
