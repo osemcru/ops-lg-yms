@@ -4,6 +4,8 @@
 
 target/
 
+*.class
+
 java-ops-base-ms.iml
 
 src/main/resources/application.yml
