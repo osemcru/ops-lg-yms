@@ -48,8 +48,8 @@ public class Yard {
     int assignationNumber;
     // the String of the warehouse
     String warehouse;
-
     int occupied;
+
 
 
     /**
@@ -65,6 +65,8 @@ public class Yard {
         this.assignationNumber=assignationNumber;
         this.occupied=occupied;
         this.validate();
+        this.occupied = occupied;
+
 
     }
 
@@ -116,9 +118,11 @@ public class Yard {
         return assignationNumber;
     }
 
+
     public int getOccupied() {
         return occupied;
     }
+
 
 
 }

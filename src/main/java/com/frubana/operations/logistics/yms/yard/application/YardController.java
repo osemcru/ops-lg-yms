@@ -239,6 +239,22 @@ public class YardController {
 
     }
 
+    @PostMapping(
+            value = "/occupy",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> ocuparMuelle(
+            @RequestBody final Yard yard) {
+
+
+
+
+
+
+        return status(HttpStatus.CREATED).body(
+                yardService.ocuparMuelle(yard)
+
+
 
     @PostMapping(
             value = "/free",
@@ -255,6 +271,7 @@ public class YardController {
         );
         return status(HttpStatus.CREATED).body(
                 yardService.liberarMuelle(yard)
+
         );
     }
 }
