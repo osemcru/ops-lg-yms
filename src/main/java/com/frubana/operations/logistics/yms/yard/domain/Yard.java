@@ -50,9 +50,7 @@ public class Yard {
     String warehouse;
     int occupied;
 
-    public int getOccupied() {
-        return occupied;
-    }
+
 
     /**
      * Creates a new instance of the yard with all its attributes.
@@ -65,8 +63,10 @@ public class Yard {
         this.id=id;
         this.color=color;
         this.assignationNumber=assignationNumber;
+        this.occupied=occupied;
         this.validate();
         this.occupied = occupied;
+
 
     }
 
@@ -97,7 +97,11 @@ public class Yard {
      * @return the color in hex format.
      */
     public String getColor() {
-        return this.color;
+        if(getOccupied()==1){
+            return "#E0E0E0";
+        }else{
+            return this.color;
+        }
     }
 
     /**
@@ -113,4 +117,12 @@ public class Yard {
     public int getAssignationNumber() {
         return assignationNumber;
     }
+
+
+    public int getOccupied() {
+        return occupied;
+    }
+
+
+
 }

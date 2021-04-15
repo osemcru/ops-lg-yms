@@ -106,8 +106,19 @@ public class YardService implements HealthCheck {
         return repository.getAll();
     }
 
+
     public Yard ocuparMuelle(Yard yard) {
 
         return this.repository.ocuparMuelle(yard);
     }
 }
+
+    public Yard liberarMuelle(Yard yard){
+        System.out.println("estos son los datos en service:"
+                +yard.getColor()
+                +yard.getWarehouse()
+        );
+        return this.repository.liberarMuelle(yard);
+    }
+}
+

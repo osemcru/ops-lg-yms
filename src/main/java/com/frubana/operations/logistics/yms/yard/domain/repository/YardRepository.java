@@ -105,7 +105,7 @@ public class YardRepository {
      * @return the Yard if exist.
      */
     public Yard getByIdAndWarehouse(int id, String warehouse) {
-        String sql_query = "Select id,color,warehouse,assignation_number "+
+        String sql_query = "Select id,color,warehouse,assignation_number,occupied "+
                 "from YARD " +
                 "where id= :id and warehouse=:warehouse";
         try (Handle handler = dbi.open();
@@ -120,7 +120,7 @@ public class YardRepository {
     }
 
     public List<Yard> getByWarehouse(String warehouse) {
-        String sql_query = "Select id,color,warehouse,assignation_number "+
+        String sql_query = "Select id,color,warehouse,assignation_number,occupied "+
                 "from YARD " +
                 "where warehouse=:warehouse order by assignation_number";
         try (Handle handler = dbi.open();
@@ -134,12 +134,44 @@ public class YardRepository {
     }
 
     public List<Yard> getAll() {
-        String sql_query = "Select id,color,warehouse,assignation_number "+
+        String sql_query = "Select id,color,warehouse,assignation_number,occupied "+
                 "from YARD ";
         try (Handle handler = dbi.open();
              Query query_string = handler.createQuery(sql_query)) {
             List<Yard> yards = query_string.mapTo(Yard.class).list();
             handler.close();
+            return yards;
+        }
+    }
+
+    public Yard liberarMuelle(Yard yard){
+
+        // int nextAssignation = this.getNextAssignationNumber(yard.getColor(),
+        //    yard.getWarehouse());
+        //System.out.println("este es el siguiente numero asignado  "+nextAssignation);
+
+
+
+        String sql_query=" UPDATE yard SET " +
+                "occupied="+0+
+                " WHERE assignation_number ="+yard.getAssignationNumber()+
+                " and warehouse='"+yard.getWarehouse()+"';";
+
+        try(Handle handler=dbi.open();
+            Update query_string = handler.createUpdate(sql_query)){
+            query_string.execute();
+            handler.close();
+        }
+
+
+        String sql_queryGetId=" SELECT id, color, warehouse, assignation_number,occupied " +
+                " FROM yard " +
+                "WHERE assignation_number ="+yard.getAssignationNumber()+
+                " and warehouse='"+yard.getWarehouse()+"';";
+
+        try(Handle handler=dbi.open();
+            Query query_string = handler.createQuery(sql_queryGetId)){
+            Yard yards = query_string.mapTo(Yard.class).first();
             return yards;
         }
     }

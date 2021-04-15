@@ -238,6 +238,7 @@ public class YardController {
 
 
     }
+
     @PostMapping(
             value = "/occupy",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -252,6 +253,25 @@ public class YardController {
 
         return status(HttpStatus.CREATED).body(
                 yardService.ocuparMuelle(yard)
+
+
+
+    @PostMapping(
+            value = "/free",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> liiberarMuelle(
+            @RequestBody final Yard yard) {
+
+
+        System.out.println("estos son los datos en controller:"
+                +"numero asignado "+yard.getAssignationNumber()
+                +"color "+yard.getColor()
+                +"warehouse "+yard.getWarehouse()
+        );
+        return status(HttpStatus.CREATED).body(
+                yardService.liberarMuelle(yard)
+
         );
     }
 }
