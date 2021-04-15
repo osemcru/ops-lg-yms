@@ -72,9 +72,33 @@ public class YardRepository {
      * @return
      */
     private int getNextAssignationNumber(String color, String warehouse){
-        //TODO: return the next number to be assigned for this match of color
-        // be carefully for the deleted index.
-        return 1;
+        String sql_query=   "SELECT * FROM yard " +
+                "WHERE color=:color and warehouse=:warehouse " +
+                "ORDER BY assignation_number ASC";
+
+        int numeroRetorno = 0;
+        List<Yard> yards;
+        try (Handle handler = dbi.open();
+             Query query_string = handler.createQuery(sql_query)) {
+            query_string
+                    .bind("color",color)
+                    .bind("warehouse",warehouse);
+            yards = query_string.mapTo(Yard.class).list();
+            handler.close();
+        }
+        System.out.println("esta es el tamaño de la lista "+yards.size());
+        int numeroComparo = 1;
+        for(int i = 0; i <yards.size(); ++i) {
+            Yard yard = yards.get(i);
+            System.out.println("comparo " +numeroComparo+" "+yard.getAssignationNumber());
+            if(numeroComparo != yard.getAssignationNumber()){
+                numeroRetorno=numeroComparo;
+                break;
+            }
+            numeroComparo += 1;
+        }
+        numeroRetorno=numeroComparo;
+        return numeroRetorno;
     }
 
 
