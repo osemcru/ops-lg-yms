@@ -48,7 +48,11 @@ public class Yard {
     int assignationNumber;
     // the String of the warehouse
     String warehouse;
+    int occupied;
 
+    public int getOccupied() {
+        return occupied;
+    }
 
     /**
      * Creates a new instance of the yard with all its attributes.
@@ -57,11 +61,13 @@ public class Yard {
      * @param assignationNumber the space location of this yard.
      */
     public Yard(int id,
-                String color,int assignationNumber){
+                String color,int assignationNumber,int occupied){
         this.id=id;
         this.color=color;
         this.assignationNumber=assignationNumber;
         this.validate();
+        this.occupied = occupied;
+
     }
 
     /**

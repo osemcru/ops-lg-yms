@@ -53,7 +53,7 @@ public class YardRepository {
                     .mapTo(int.class).first();
             handler.close();
             Yard createdYard = new Yard(yard_id,yard.getColor(),
-                    nextAssignation);
+                    nextAssignation,0);
             createdYard.AssignWarehouse(warehouse);
             return createdYard ;
 
@@ -166,7 +166,8 @@ public class YardRepository {
             Yard yard = new Yard(
                     rs.getInt("id"),
                     rs.getString("color"),
-                    rs.getInt("assignation_number")
+                    rs.getInt("assignation_number"),
+                    rs.getInt("occupied")
             );
             yard.AssignWarehouse(rs.getString("warehouse"));
             return yard;
@@ -185,7 +186,7 @@ public class YardRepository {
             handler.close();
         }
 
-        String sql_queryGetYard=" SELECT id, color, warehouse, assignation_number " +
+        String sql_queryGetYard=" SELECT id, color, warehouse, assignation_number, occupied " +
                 "FROM yard " +
                 "WHERE assignation_number ="+yard.getAssignationNumber()+
                 " and warehouse='"+yard.getWarehouse()+"';";
