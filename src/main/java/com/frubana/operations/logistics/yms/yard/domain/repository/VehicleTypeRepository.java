@@ -38,7 +38,7 @@ public class VehicleTypeRepository {
      * Retrieve all the names from the vehicle_type table
      * @return a list with the names.
      */
-    public List<String> getAllVehicleTypes()
+    public List<String> getAll()
     {
         String sql_query = VehicleTypeRepository.getInVehicleType;
         try (Handle handler = dbi.open();
@@ -54,7 +54,7 @@ public class VehicleTypeRepository {
      * @param name the type name
      * @return the id generated on insert
      */
-    public int registerVehicleType(String name){
+    public int register(String name){
         try(Handle handler=dbi.open();
             Update query_string = handler.createUpdate(VehicleTypeRepository.
                     insertInVehicleType)){
