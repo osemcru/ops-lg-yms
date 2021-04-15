@@ -246,15 +246,10 @@ public class YardController {
     public ResponseEntity<Object> ocuparMuelle(
             @RequestBody final Yard yard) {
 
-
-
-
-
-
         return status(HttpStatus.CREATED).body(
-                yardService.ocuparMuelle(yard)
+                yardService.ocuparMuelle(yard));
 
-
+    }
 
     @PostMapping(
             value = "/free",
