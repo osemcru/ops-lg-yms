@@ -238,4 +238,21 @@ public class YardController {
 
 
     }
+    @PostMapping(
+            value = "/occupy",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> ocuparMuelle(
+            @RequestBody final Yard yard) {
+
+
+        System.out.println("estos son los datos en controller:"
+
+                +"color "+yard.getColor()
+                +"warehouse "+yard.getWarehouse()
+        );
+        return status(HttpStatus.CREATED).body(
+                yardService.ocuparMuelle(yard)
+        );
+    }
 }

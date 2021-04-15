@@ -104,5 +104,7 @@ public class Yard {
         this.warehouse=warehouse;
     }
 
-
+    public int getAssignationNumber() {
+        return assignationNumber;
+    }
 }

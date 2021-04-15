@@ -172,4 +172,28 @@ public class YardRepository {
             return yard;
         }
     }
+    public Yard ocuparMuelle(Yard yard){
+
+        String sql_query=" UPDATE yard SET " +
+                "occupied="+1+
+                " WHERE assignation_number ="+yard.getAssignationNumber()+
+                " and warehouse='"+yard.getWarehouse()+"';";
+
+        try(Handle handler=dbi.open();
+            Update query_string = handler.createUpdate(sql_query)){
+            query_string.execute();
+            handler.close();
+        }
+
+        String sql_queryGetYard=" SELECT id, color, warehouse, assignation_number " +
+                "FROM yard " +
+                "WHERE assignation_number ="+yard.getAssignationNumber()+
+                " and warehouse='"+yard.getWarehouse()+"';";
+
+        try(Handle handler=dbi.open();
+            Query query_string = handler.createQuery(sql_queryGetYard)){
+            Yard  yards = query_string.mapTo(Yard.class).first();
+            return yards;
+        }
+    }
 }
