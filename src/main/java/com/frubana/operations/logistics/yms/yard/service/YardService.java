@@ -95,4 +95,22 @@ public class YardService implements HealthCheck {
     public List<Yard> getYards() {
         return repository.getAll();
     }
+
+    /**
+     * Update a Yard.
+     * @param yard the yard with the new information.
+     * @param yardId the id to be updated
+     * @return {@link Yard} the updated object.
+     */
+    @Transactional
+    @Retry(name = SERVICE_NAME)
+    @CircuitBreaker(name = SERVICE_NAME)
+    public Yard update(Yard yard, String yardId) {
+        Yard oldYard = repository.getByIdAndWarehouse(Integer.parseInt(yardId),
+                yard.getWarehouse());
+        yard.copyTo(oldYard);
+        Yard newYard = repository.update(oldYard);
+
+        return yard;
+    }
 }

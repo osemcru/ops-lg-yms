@@ -48,6 +48,8 @@ public class Yard {
     int assignationNumber;
     // the String of the warehouse
     String warehouse;
+    //the vehicle type supported by this yard
+    private int vehicleType;
 
 
     /**
@@ -100,9 +102,36 @@ public class Yard {
      */
     public String getWarehouse(){return  this.warehouse; }
 
-    public void AssignWarehouse(String warehouse){
+
+
+    public void assignWarehouse(String warehouse){
         this.warehouse=warehouse;
     }
 
+    public void setVehicleType(int vehicle_type) {
 
+        this.vehicleType=vehicle_type;
+    }
+
+
+    public void copyTo(Yard oldYard) {
+        if (oldYard==null)
+            return;
+        oldYard.warehouse=this.warehouse;
+        oldYard.assignationNumber=this.assignationNumber;
+        oldYard.color=this.color;
+        oldYard.vehicleType=this.vehicleType;
+    }
+
+    public int getAssignationNumber() {
+        return this.assignationNumber;
+    }
+
+    public int getVehicleType() {
+        return this.vehicleType;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
