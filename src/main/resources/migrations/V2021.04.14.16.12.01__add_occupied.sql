@@ -1,1 +1,1 @@
-ALTER TABLE public.yard ADD occupied int;
+ALTER TABLE public.yard ADD occupied boolean;

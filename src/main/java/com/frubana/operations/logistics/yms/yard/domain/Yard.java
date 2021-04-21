@@ -48,7 +48,7 @@ public class Yard {
     int assignationNumber;
     // the String of the warehouse
     String warehouse;
-    int occupied;
+    boolean occupied;
 
 
 
@@ -59,15 +59,12 @@ public class Yard {
      * @param assignationNumber the space location of this yard.
      */
     public Yard(int id,
-                String color,int assignationNumber,int occupied){
+                String color,int assignationNumber,boolean occupied){
         this.id=id;
         this.color=color;
         this.assignationNumber=assignationNumber;
-        this.occupied=occupied;
         this.validate();
         this.occupied = occupied;
-
-
     }
 
     /**
@@ -97,7 +94,7 @@ public class Yard {
      * @return the color in hex format.
      */
     public String getColor() {
-        if(getOccupied()==1){
+        if(getOccupied()==true){
             return "#E0E0E0";
         }else{
             return this.color;
@@ -119,7 +116,7 @@ public class Yard {
     }
 
 
-    public int getOccupied() {
+    public boolean getOccupied() {
         return occupied;
     }
 

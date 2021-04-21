@@ -246,7 +246,7 @@ public class YardController {
     public ResponseEntity<Object> ocuparMuelle(
             @RequestBody final Yard yard) {
 
-        return status(HttpStatus.CREATED).body(
+        return status(HttpStatus.OK).body(
                 yardService.ocuparMuelle(yard));
 
     }
@@ -258,13 +258,7 @@ public class YardController {
     public ResponseEntity<Object> liiberarMuelle(
             @RequestBody final Yard yard) {
 
-
-        System.out.println("estos son los datos en controller:"
-                +"numero asignado "+yard.getAssignationNumber()
-                +"color "+yard.getColor()
-                +"warehouse "+yard.getWarehouse()
-        );
-        return status(HttpStatus.CREATED).body(
+        return status(HttpStatus.OK).body(
                 yardService.liberarMuelle(yard)
 
         );

@@ -114,10 +114,6 @@ public class YardService implements HealthCheck {
 
 
     public Yard liberarMuelle(Yard yard){
-        System.out.println("estos son los datos en service:"
-                +yard.getColor()
-                +yard.getWarehouse()
-        );
         return this.repository.liberarMuelle(yard);
     }
 }
