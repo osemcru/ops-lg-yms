@@ -43,13 +43,13 @@ public class YardService implements HealthCheck {
      * Returns the some object of the given id.
      *
      * @param id        The id of the wanted tasks.
-     * @param warehouse The warehouse where the task belongs.
      * @return True if the tasks exists, false otherwise.
      */
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
-    public boolean exists(String id, String warehouse) {
-        return this.repository.exist(Integer.parseInt(id), warehouse);
+
+    public boolean exists(String id) {
+        return this.repository.exist(Integer.parseInt(id));
     }
 
     /**
@@ -108,13 +108,28 @@ public class YardService implements HealthCheck {
 
 
     public Yard ocuparMuelle(Yard yard) {
-
         return this.repository.ocuparMuelle(yard);
     }
 
 
     public Yard liberarMuelle(Yard yard){
         return this.repository.liberarMuelle(yard);
+    }
+    /**
+     * Update a Yard.
+     * @param yard the yard with the new information.
+     * @param yardId the id to be updated
+     * @return {@link Yard} the updated object.
+     */
+    @Transactional
+    @Retry(name = SERVICE_NAME)
+    @CircuitBreaker(name = SERVICE_NAME)
+    public Yard update(Yard yard, String yardId) {
+        Yard oldYard = repository.get(Integer.parseInt(yardId));
+        yard.copyTo(oldYard);
+        Yard newYard = repository.update(oldYard);
+
+        return yard;
     }
 }
 
