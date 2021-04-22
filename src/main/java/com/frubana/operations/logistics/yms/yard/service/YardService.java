@@ -129,7 +129,7 @@ public class YardService implements HealthCheck {
         yard.copyTo(oldYard);
         Yard newYard = repository.update(oldYard);
 
-        return yard;
+        return newYard;
     }
 }
 

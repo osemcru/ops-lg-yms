@@ -282,7 +282,7 @@ public class YardController {
      * </code>
      */
     @PutMapping(
-            value = "/{id}/",
+            value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> update(

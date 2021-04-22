@@ -213,13 +213,12 @@ public class YardRepository {
         }
 
 
-        String sql_queryGetId=" SELECT id, color, warehouse, assignation_number,occupied " +
-                " FROM yard " +
+        String sql_queryGetYard= SELECT_YARD_SQL_QUERY +
                 " WHERE assignation_number =:assignation_number"+
                 " and warehouse= :warehouse and color=:color;";
 
         try(Handle handler=dbi.open();
-            Query query_string = handler.createQuery(sql_queryGetId)){
+            Query query_string = handler.createQuery(sql_queryGetYard)){
             query_string.bind("assignation_number",yard.getAssignationNumber())
                         .bind("warehouse",yard.getWarehouse())
                         .bind("color",yard.getColor());
@@ -235,6 +234,7 @@ public class YardRepository {
                 "assignation_number = :assignation_number," +
                 "vehicle_type = :vehicle_type" +
                 " WHERE id=:id";
+
         try (Handle handler = dbi.open();
              Update update = handler.createUpdate(sqlQuery)) {
             update.bind("color", updatedYard.getColor())
@@ -293,8 +293,7 @@ public class YardRepository {
             handler.close();
         }
 
-        String sql_queryGetYard=" SELECT id, color, warehouse, assignation_number, occupied " +
-                "FROM yard " +
+        String sql_queryGetYard= SELECT_YARD_SQL_QUERY +
                 " WHERE assignation_number =:assignation_number"+
                 " and warehouse= :warehouse and color=:color;";
 
