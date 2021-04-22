@@ -94,14 +94,13 @@ public class YardRepository {
      * @param warehouse the warehouse to be retrieved
      * @return the {@link Boolean} that checks if a yard exists
      */
-    public boolean exist(int id, String warehouse) {
+    public boolean exist(int id) {
         String sql_query = "Select count(*) from YARD " +
-                "where id= :id and warehouse=:warehouse";
+                "where id= :id ";
         try (Handle handler = dbi.open();
              Query query_string = handler.createQuery(sql_query)) {
             query_string
-                    .bind("id", id)
-                    .bind("warehouse", warehouse);
+                    .bind("id", id);
             int yard_id = query_string.mapTo(int.class).first();
             handler.close();
             return yard_id > 0;
@@ -123,6 +122,25 @@ public class YardRepository {
             query_string
                     .bind("id", id)
                     .bind("warehouse", warehouse);
+            Yard yard = query_string.mapTo(Yard.class).first();
+            handler.close();
+            return yard;
+        }
+    }
+
+        /**
+     * Retrieve a {@link Yard} by its id and warehouse.
+     *
+     * @param id        the id for yard
+     * @return the Yard if exist.
+     */
+    public Yard get(int id) {
+        String sql_query = SELECT_YARD_SQL_QUERY +
+                " where id= :id ";
+        try (Handle handler = dbi.open();
+             Query query_string = handler.createQuery(sql_query)) {
+            query_string
+                    .bind("id", id);
             Yard yard = query_string.mapTo(Yard.class).first();
             handler.close();
             return yard;

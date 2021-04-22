@@ -276,7 +276,7 @@ public class YardController {
                     JsonUtils.jsonResponse(HttpStatus.BAD_REQUEST,
                             "The Yard cannot be null"));
         }
-        if(!yardService.exists(yardId,yard.getWarehouse())) {
+        if(!yardService.exists(yardId)) {
             return status(HttpStatus.NOT_FOUND).body("Not Found");
         }
         return status(HttpStatus.OK).body(

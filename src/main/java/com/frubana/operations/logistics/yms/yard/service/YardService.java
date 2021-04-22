@@ -42,8 +42,8 @@ public class YardService implements HealthCheck {
      */
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
-    public boolean exists(String id, String warehouse) {
-        return this.repository.exist(Integer.parseInt(id),warehouse);
+    public boolean exists(String id) {
+        return this.repository.exist(Integer.parseInt(id));
     }
 
     /** Returns the some object of the given id.
@@ -106,8 +106,7 @@ public class YardService implements HealthCheck {
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
     public Yard update(Yard yard, String yardId) {
-        Yard oldYard = repository.getByIdAndWarehouse(Integer.parseInt(yardId),
-                yard.getWarehouse());
+        Yard oldYard = repository.get(Integer.parseInt(yardId));
         yard.copyTo(oldYard);
         Yard newYard = repository.update(oldYard);
 
