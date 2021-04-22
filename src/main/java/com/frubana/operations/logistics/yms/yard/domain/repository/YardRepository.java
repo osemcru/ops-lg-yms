@@ -76,7 +76,6 @@ public class YardRepository {
                 "WHERE color=:color and warehouse=:warehouse " +
                 "ORDER BY assignation_number ASC";
 
-        int numeroRetorno = 0;
         List<Yard> yards;
         try (Handle handler = dbi.open();
              Query query_string = handler.createQuery(sql_query)) {
@@ -87,18 +86,13 @@ public class YardRepository {
             handler.close();
         }
 
-        int numeroComparo = 1;
         for(int i = 0; i <yards.size(); ++i) {
             Yard yard = yards.get(i);
-
-            if(numeroComparo != yard.getAssignationNumber()){
-                numeroRetorno=numeroComparo;
-                break;
+            if(i+1 != yard.getAssignationNumber()){
+                return i+1;
             }
-            numeroComparo += 1;
         }
-        numeroRetorno=numeroComparo;
-        return numeroRetorno;
+        return yards.size()+1;
     }
 
 
@@ -170,16 +164,10 @@ public class YardRepository {
 
     public Yard liberarMuelle(Yard yard){
 
-        // int nextAssignation = this.getNextAssignationNumber(yard.getColor(),
-        //    yard.getWarehouse());
+       //  int nextAssignation = this.getNextAssignationNumber(yard.getColor(),
+         //   yard.getWarehouse());
         //System.out.println("este es el siguiente numero asignado  "+nextAssignation);
 
-
-
-        //String sql_query=" UPDATE yard SET " +
-          //      "occupied='false'"+
-            //    " WHERE assignation_number ="+yard.getAssignationNumber()+
-              //  " and warehouse='"+yard.getWarehouse()+"'"+" and color='"+yard.getColor()+"';";
 
         String sql_query=" UPDATE yard SET " +
                 "occupied='false'"+
@@ -195,11 +183,6 @@ public class YardRepository {
             handler.close();
         }
 
-
-        //String sql_queryGetId=" SELECT id, color, warehouse, assignation_number,occupied " +
-          //      " FROM yard " +
-            //    "WHERE assignation_number ="+yard.getAssignationNumber()+
-              //  " and warehouse='"+yard.getWarehouse()+"'"+" and color='"+yard.getColor()+"';";
 
         String sql_queryGetId=" SELECT id, color, warehouse, assignation_number,occupied " +
                 " FROM yard " +
@@ -246,11 +229,6 @@ public class YardRepository {
         }
     }
     public Yard ocuparMuelle(Yard yard){
-
-        //String sql_query=" UPDATE yard SET " +
-          //      "occupied='true'"+
-            //    " WHERE assignation_number ="+yard.getAssignationNumber()+
-              //  " and warehouse='"+yard.getWarehouse()+"'"+" and color='"+yard.getColor()+"';";
 
         String sql_query=" UPDATE yard SET " +
                 "occupied='true'"+
