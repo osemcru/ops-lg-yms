@@ -238,4 +238,50 @@ public class YardController {
 
 
     }
+
+
+    /** Updates the yard.
+     *
+     * @param yard the yard object to be updated in the repository, cannot be
+     *             null.
+     * @return A JSON response with a message and status:
+     * <code>
+     * {
+     * "message": "ok",
+     * "status": 200
+     * }
+     * or
+     * {
+     *     "message": "not_found",
+     *     "status": 404
+     * }
+     * </code>
+     */
+    @PutMapping(
+            value = "/{id}/",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> update(
+            @PathVariable(value = "id") String yardId,
+            @RequestBody final Yard yard) {
+        //Logging the given info
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("yard", yard);
+        params.put("yardId", yardId);
+        logFormatter.logInfo(logger, "updateYard",
+                "Received request", params);
+        if (yard == null) {
+            return status(HttpStatus.BAD_REQUEST).body(
+                    JsonUtils.jsonResponse(HttpStatus.BAD_REQUEST,
+                            "The Yard cannot be null"));
+        }
+        if(!yardService.exists(yardId)) {
+            return status(HttpStatus.NOT_FOUND).body("Not Found");
+        }
+        return status(HttpStatus.OK).body(
+                yardService.update(yard,yardId));
+
+
+    }
 }
