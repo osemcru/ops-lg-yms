@@ -48,8 +48,12 @@ public class Yard {
     int assignationNumber;
     // the String of the warehouse
     String warehouse;
+
+    boolean occupied;
+
     //the vehicle type supported by this yard
     private int vehicleType;
+
 
 
     /**
@@ -59,11 +63,12 @@ public class Yard {
      * @param assignationNumber the space location of this yard.
      */
     public Yard(int id,
-                String color,int assignationNumber){
+                String color,int assignationNumber,boolean occupied){
         this.id=id;
         this.color=color;
         this.assignationNumber=assignationNumber;
         this.validate();
+        this.occupied = occupied;
     }
 
     /**
@@ -93,7 +98,11 @@ public class Yard {
      * @return the color in hex format.
      */
     public String getColor() {
-        return this.color;
+        if(getOccupied()==true){
+            return "#E0E0E0";
+        }else{
+            return this.color;
+        }
     }
 
     /**
@@ -107,6 +116,16 @@ public class Yard {
     public void assignWarehouse(String warehouse){
         this.warehouse=warehouse;
     }
+
+
+
+
+
+    public boolean getOccupied() {
+        return occupied;
+    }
+
+
 
     public void setVehicleType(int vehicle_type) {
 
@@ -130,6 +149,7 @@ public class Yard {
     public int getVehicleType() {
         return this.vehicleType;
     }
+
 
     public int getId() {
         return id;

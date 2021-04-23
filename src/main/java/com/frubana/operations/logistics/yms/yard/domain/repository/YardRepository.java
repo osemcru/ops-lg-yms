@@ -60,10 +60,10 @@ public class YardRepository {
                     .executeAndReturnGeneratedKeys("id")
                     .mapTo(int.class).first();
             handler.close();
-            Yard createdYard = new Yard(yard_id, yard.getColor(),
-                    nextAssignation);
+            Yard createdYard = new Yard(yard_id,yard.getColor(),
+                    nextAssignation,false);
             createdYard.assignWarehouse(warehouse);
-            return createdYard;
+            return createdYard ;
 
         }
     }
@@ -80,10 +80,28 @@ public class YardRepository {
      * @param warehouse
      * @return
      */
-    private int getNextAssignationNumber(String color, String warehouse) {
-        //TODO: return the next number to be assigned for this match of color
-        // be carefully for the deleted index.
-        return 1;
+    private int getNextAssignationNumber(String color, String warehouse){
+        String sql_query=   "SELECT * FROM yard " +
+                "WHERE color=:color and warehouse=:warehouse " +
+                "ORDER BY assignation_number ASC";
+
+        List<Yard> yards;
+        try (Handle handler = dbi.open();
+             Query query_string = handler.createQuery(sql_query)) {
+            query_string
+                    .bind("color",color)
+                    .bind("warehouse",warehouse);
+            yards = query_string.mapTo(Yard.class).list();
+            handler.close();
+        }
+
+        for(int i = 0; i <yards.size(); ++i) {
+            Yard yard = yards.get(i);
+            if(i+1 != yard.getAssignationNumber()){
+                return i+1;
+            }
+        }
+        return yards.size()+1;
     }
 
 
@@ -91,7 +109,6 @@ public class YardRepository {
      * Retrieve if an yard exists or not in the DB
      *
      * @param id        the id of the yard
-     * @param warehouse the warehouse to be retrieved
      * @return the {@link Boolean} that checks if a yard exists
      */
     public boolean exist(int id) {
@@ -115,6 +132,7 @@ public class YardRepository {
      * @return the Yard if exist.
      */
     public Yard getByIdAndWarehouse(int id, String warehouse) {
+
         String sql_query = SELECT_YARD_SQL_QUERY +
                 " where id= :id and warehouse=:warehouse";
         try (Handle handler = dbi.open();
@@ -148,6 +166,7 @@ public class YardRepository {
     }
 
     public List<Yard> getByWarehouse(String warehouse) {
+
         String sql_query = SELECT_YARD_SQL_QUERY +
                 " where warehouse=:warehouse order by assignation_number";
         try (Handle handler = dbi.open();
@@ -161,6 +180,7 @@ public class YardRepository {
     }
 
     public List<Yard> getAll() {
+
         String sqlQuery = SELECT_YARD_SQL_QUERY;
         try (Handle handler = dbi.open();
              Query queryString = handler.createQuery(sqlQuery)) {
@@ -170,12 +190,51 @@ public class YardRepository {
         }
     }
 
+
+    public Yard liberarMuelle(Yard yard){
+
+       //  int nextAssignation = this.getNextAssignationNumber(yard.getColor(),
+         //   yard.getWarehouse());
+        //System.out.println("este es el siguiente numero asignado  "+nextAssignation);
+
+
+        String sql_query=" UPDATE yard SET " +
+                "occupied='false'"+
+                " WHERE assignation_number =:assignation_number"+
+                " and warehouse= :warehouse and color=:color;";
+
+        try(Handle handler=dbi.open();
+            Update query_string = handler.createUpdate(sql_query)){
+            query_string.bind("assignation_number",yard.getAssignationNumber())
+                        .bind("warehouse",yard.getWarehouse())
+                        .bind("color",yard.getColor());
+            query_string.execute();
+            handler.close();
+        }
+
+
+        String sql_queryGetYard= SELECT_YARD_SQL_QUERY +
+                " WHERE assignation_number =:assignation_number"+
+                " and warehouse= :warehouse and color=:color;";
+
+        try(Handle handler=dbi.open();
+            Query query_string = handler.createQuery(sql_queryGetYard)){
+            query_string.bind("assignation_number",yard.getAssignationNumber())
+                        .bind("warehouse",yard.getWarehouse())
+                        .bind("color",yard.getColor());
+            Yard yards = query_string.mapTo(Yard.class).first();
+            return yards;
+        }
+    }
+
+
     public Yard update(Yard updatedYard) {
         String sqlQuery = "UPDATE yard SET color = :color," +
                 "warehouse = :warehouse," +
                 "assignation_number = :assignation_number," +
                 "vehicle_type = :vehicle_type" +
                 " WHERE id=:id";
+
         try (Handle handler = dbi.open();
              Update update = handler.createUpdate(sqlQuery)) {
             update.bind("color", updatedYard.getColor())
@@ -188,8 +247,6 @@ public class YardRepository {
             return updatedYard;
         }
     }
-
-
 
     /** Mapper of the {@link Yard} for the JDBI implementation.
      */
@@ -212,11 +269,41 @@ public class YardRepository {
             Yard yard = new Yard(
                     rs.getInt("id"),
                     rs.getString("color"),
-                    rs.getInt("assignation_number")
+                    rs.getInt("assignation_number"),
+                    rs.getBoolean("occupied")
             );
             yard.assignWarehouse(rs.getString("warehouse"));
             yard.setVehicleType(rs.getInt("vehicle_type"));
             return yard;
+        }
+    }
+    public Yard ocuparMuelle(Yard yard){
+
+        String sql_query=" UPDATE yard SET " +
+                "occupied='true'"+
+                " WHERE assignation_number =:assignation_number"+
+                " and warehouse= :warehouse and color=:color;";
+
+        try(Handle handler=dbi.open();
+            Update query_string = handler.createUpdate(sql_query)){
+            query_string.bind("assignation_number",yard.getAssignationNumber())
+                        .bind("warehouse",yard.getWarehouse())
+                        .bind("color",yard.getColor());
+            query_string.execute();
+            handler.close();
+        }
+
+        String sql_queryGetYard= SELECT_YARD_SQL_QUERY +
+                " WHERE assignation_number =:assignation_number"+
+                " and warehouse= :warehouse and color=:color;";
+
+        try(Handle handler=dbi.open();
+            Query query_string = handler.createQuery(sql_queryGetYard)){
+            query_string.bind("assignation_number",yard.getAssignationNumber())
+                        .bind("warehouse",yard.getWarehouse())
+                        .bind("color",yard.getColor());
+            Yard  yards = query_string.mapTo(Yard.class).first();
+            return yards;
         }
     }
 }

@@ -15,18 +15,23 @@ import java.util.List;
  */
 @Component
 public class YardService implements HealthCheck {
-    /** The name that represents this service. MUST NOT BE CHANGED. */
+    /**
+     * The name that represents this service. MUST NOT BE CHANGED.
+     */
     public static final String SERVICE_NAME = "yms";
 
 
-    /** The repository to ask for data, it's never null. */
+    /**
+     * The repository to ask for data, it's never null.
+     */
     private final YardRepository repository;
 
 
-    /** Constructor.
+    /**
+     * Constructor.
      *
-     * @param repository        Repository to persists or extract the needed
-     *                          data of the tasks.
+     * @param repository Repository to persists or extract the needed
+     *                   data of the tasks.
      */
     @Autowired
     public YardService(YardRepository repository) {
@@ -34,19 +39,21 @@ public class YardService implements HealthCheck {
     }
 
 
-    /** Returns the some object of the given id.
+    /**
+     * Returns the some object of the given id.
      *
      * @param id        The id of the wanted tasks.
-     * @param warehouse The warehouse where the task belongs.
      * @return True if the tasks exists, false otherwise.
      */
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
+
     public boolean exists(String id) {
         return this.repository.exist(Integer.parseInt(id));
     }
 
-    /** Returns the some object of the given id.
+    /**
+     * Returns the some object of the given id.
      *
      * @param id        The id of the wanted tasks.
      * @param warehouse The warehouse where the task belongs.
@@ -66,6 +73,7 @@ public class YardService implements HealthCheck {
 
     /**
      * Save a Yard in the repository
+     *
      * @param yard
      * @param warehouse
      */
@@ -73,11 +81,12 @@ public class YardService implements HealthCheck {
     @Retry(name = SERVICE_NAME)
     @CircuitBreaker(name = SERVICE_NAME)
     public Yard registerYard(Yard yard, String warehouse) {
-       return this.repository.register(yard,warehouse);
+        return this.repository.register(yard, warehouse);
     }
 
     /**
      * get a list of yards by warehouse
+     *
      * @param warehouse the warehouse that contains the yards
      */
     @Transactional
@@ -86,6 +95,7 @@ public class YardService implements HealthCheck {
     public List<Yard> getYards(String warehouse) {
         return repository.getByWarehouse(warehouse);
     }
+
     /**
      * get a list of yards.
      */
@@ -96,6 +106,15 @@ public class YardService implements HealthCheck {
         return repository.getAll();
     }
 
+
+    public Yard ocuparMuelle(Yard yard) {
+        return this.repository.ocuparMuelle(yard);
+    }
+
+
+    public Yard liberarMuelle(Yard yard){
+        return this.repository.liberarMuelle(yard);
+    }
     /**
      * Update a Yard.
      * @param yard the yard with the new information.
@@ -110,6 +129,7 @@ public class YardService implements HealthCheck {
         yard.copyTo(oldYard);
         Yard newYard = repository.update(oldYard);
 
-        return yard;
+        return newYard;
     }
 }
+

@@ -99,7 +99,7 @@ public class YardController {
                             "The warehouse cannot be null or empty"));
         }
 
-        if (yardService.exists(id, warehouse)) {
+        if (yardService.exists(id)) {
             // Register the yard throws an error if something fails.
             Yard yard = yardService.getYard(id, warehouse);
             params.put("yard", yard);
@@ -240,6 +240,30 @@ public class YardController {
     }
 
 
+    @PostMapping(
+            value = "/occupy",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> ocuparMuelle(
+            @RequestBody final Yard yard) {
+
+        return status(HttpStatus.OK).body(
+                yardService.ocuparMuelle(yard));
+
+    }
+
+    @PostMapping(
+            value = "/free",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> liiberarMuelle(
+            @RequestBody final Yard yard) {
+
+        return status(HttpStatus.OK).body(
+                yardService.liberarMuelle(yard)
+        );
+    }
+
     /** Updates the yard.
      *
      * @param yard the yard object to be updated in the repository, cannot be
@@ -258,7 +282,7 @@ public class YardController {
      * </code>
      */
     @PutMapping(
-            value = "/{id}/",
+            value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> update(
@@ -281,7 +305,5 @@ public class YardController {
         }
         return status(HttpStatus.OK).body(
                 yardService.update(yard,yardId));
-
-
     }
 }
