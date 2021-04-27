@@ -23,6 +23,9 @@ public class YardRepository {
      * Select * from YARD
      */
     public static final String SELECT_YARD_SQL_QUERY = "Select * from YARD ";
+    public static final String SELECT_NEXT_FREE_YARD_SQL_QUERY =SELECT_YARD_SQL_QUERY+
+            "INNER JOIN vehicle_type vtp on vtp.id = yard.vehicle_type ";
+
 
     /**
      * The JDBI instance to request data to the database, it's never null.
@@ -247,6 +250,25 @@ public class YardRepository {
             return updatedYard;
         }
     }
+
+    public Yard getNextFreeYard(String warehouse, String vehicleTypeName) {
+
+
+
+
+        String sql_queryGetYard= SELECT_NEXT_FREE_YARD_SQL_QUERY +
+                " WHERE warehouse= :warehouse and vtp.name= :name";
+
+        try(Handle handler=dbi.open();
+            Query query_string = handler.createQuery(sql_queryGetYard)){
+            query_string.bind("warehouse",warehouse)
+                    .bind("name",vehicleTypeName);
+            Yard yard = query_string.mapTo(Yard.class).first();
+            return yard;
+        }
+
+    }
+
 
     /** Mapper of the {@link Yard} for the JDBI implementation.
      */

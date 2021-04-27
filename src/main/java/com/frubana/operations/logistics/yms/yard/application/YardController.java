@@ -4,6 +4,7 @@ import com.frubana.operations.logistics.yms.common.configuration.FormattedLogger
 import com.frubana.operations.logistics.yms.common.utils.JsonUtils;
 import com.frubana.operations.logistics.yms.yard.domain.Yard;
 import com.frubana.operations.logistics.yms.yard.service.YardService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -305,5 +306,29 @@ public class YardController {
         }
         return status(HttpStatus.OK).body(
                 yardService.update(yard,yardId));
+    }
+
+
+    @GetMapping(
+            value =  "/next-free-yard/{warehouse}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> nextFreeYard(
+            @PathVariable("warehouse") String warehouse,
+            @RequestParam(value = "vehicle_type", defaultValue = "") String vehicleTypeName
+    ) {
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("warehouse", warehouse);
+        params.put("vehicleTypeName", vehicleTypeName);
+        logFormatter.logInfo(logger, "nextFreeYard",
+                "Received request", params);
+        if(StringUtils.isEmpty(vehicleTypeName) || StringUtils.isEmpty(warehouse) ){
+            return status(HttpStatus.BAD_REQUEST).body("Faltaron datos obligatorios ");
+        }
+
+        return status(HttpStatus.OK).body(
+                yardService.nextFreeYard(warehouse,vehicleTypeName));
+
     }
 }
