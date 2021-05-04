@@ -251,20 +251,24 @@ public class YardRepository {
         }
     }
 
-    public Yard getNextFreeYard(String warehouse, String vehicleTypeName) {
+    public  Yard  getNextFreeYard(String warehouse, String vehicleTypeName) {
 
 
 
 
         String sql_queryGetYard= SELECT_NEXT_FREE_YARD_SQL_QUERY +
-                " WHERE warehouse= :warehouse and vtp.name= :name";
+                " WHERE warehouse= :warehouse and occupied= :occupied and vtp.name= :name";
 
         try(Handle handler=dbi.open();
             Query query_string = handler.createQuery(sql_queryGetYard)){
             query_string.bind("warehouse",warehouse)
-                    .bind("name",vehicleTypeName);
-            Yard yard = query_string.mapTo(Yard.class).first();
-            return yard;
+                    .bind("name",vehicleTypeName)
+                    .bind("occupied",false);
+            List<Yard> yard = query_string.mapTo(Yard.class).list();
+            if(yard.isEmpty()){
+                return null;
+            }
+            return yard.get(0);
         }
 
     }

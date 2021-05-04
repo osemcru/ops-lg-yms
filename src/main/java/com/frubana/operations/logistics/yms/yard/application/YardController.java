@@ -326,9 +326,15 @@ public class YardController {
         if(StringUtils.isEmpty(vehicleTypeName) || StringUtils.isEmpty(warehouse) ){
             return status(HttpStatus.BAD_REQUEST).body("Faltaron datos obligatorios ");
         }
-
+        Yard yard =  yardService.nextFreeYard(warehouse,vehicleTypeName);
+        if (yard==null){
+            return  status(HttpStatus.NOT_FOUND).body(
+                    "No hay muelles disponibles"
+            );
+        }
         return status(HttpStatus.OK).body(
-                yardService.nextFreeYard(warehouse,vehicleTypeName));
+                yard
+               );
 
     }
 }
