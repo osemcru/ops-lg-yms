@@ -1,1 +1,1 @@
-ALTER TABLE public.yard ADD assignation_number int;
+ALTER TABLE yms.yard ADD assignation_number int;
